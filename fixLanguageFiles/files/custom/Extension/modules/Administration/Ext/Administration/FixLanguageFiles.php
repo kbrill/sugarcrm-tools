@@ -1,8 +1,4 @@
 <?php
-// WARNING: The contents of this file are auto-generated.
-
-//Merged from custom/Extension/modules/Administration/Ext/Administration/SweetDBAdmin.php
-
 /**
  * Created by JetBrains PhpStorm.
  * User: kenbrill
