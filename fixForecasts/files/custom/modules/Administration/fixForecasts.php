@@ -7,6 +7,8 @@
  */
 $ffmws = new fixForecasts();
 $ffmws->repairReportsToStructure();
+$ffmws->RemoveDuplicateRecords();
+$ffmws->updateOpportunityDates();
 $ffmws->debugPrint($ffmws->results);
 
 class fixForecasts
@@ -195,5 +197,58 @@ class fixForecasts
         echo "------------------------------------------------------<br><pre>";
         print_r($thingToPrint);
         echo "</pre><br>------------------------------------------------------";
+    }
+
+    public function RemoveDuplicateRecords() {
+        $result=$GLOBALS['db']->query("UPDATE forecast_worksheets
+                                JOIN (
+                                SELECT parent_id,count(*) cRecords,max(date_modified) maxDE
+                                FROM forecast_worksheets
+                                WHERE deleted = '0' AND draft = '0'
+                                GROUP BY parent_id
+                                HAVING count(*) > 1
+                                ) fws
+                                ON
+                                fws.parent_id = forecast_worksheets.parent_id AND
+                                fws.maxDE <> date_modified
+                                SET forecast_worksheets.draft = '1'
+                                WHERE forecast_worksheets.deleted = '0' AND forecast_worksheets.draft = '0'");
+        $this->results['aaa']=print_r($GLOBALS['db']->getAffectedRowCount($result),true). " Duplicate worksheets removed";
+        $result2=$GLOBALS['db']->query("UPDATE forecast_worksheets
+                                JOIN (
+                                SELECT parent_id,count(*) cRecords,max(date_modified) maxDE
+                                FROM forecast_worksheets
+                                WHERE deleted = '0' AND draft = '1'
+                                GROUP BY parent_id
+                                HAVING count(*) > 1
+                                ) fws
+                                ON
+                                fws.parent_id = forecast_worksheets.parent_id AND
+                                fws.maxDE <> date_modified
+                                SET forecast_worksheets.deleted = '1'
+                                WHERE forecast_worksheets.deleted = '0' AND forecast_worksheets.draft = '1' ");
+        $this->results['bbb']=print_r($GLOBALS['db']->getAffectedRowCount($result2),true). " Duplicate worksheets removed";
+    }
+
+    public function updateOpportunityDates() {
+        $query = "SELECT opportunities.id, opportunities.date_closed
+                    FROM opportunities
+                    WHERE opportunities.date_closed <> (SELECT MAX(revenue_line_items.date_closed)
+                                                          FROM revenue_line_items
+                                                          WHERE revenue_line_items.opportunity_id = opportunities.id AND
+                                                                revenue_line_items.deleted=0) AND
+                                                  opportunities.deleted=0
+                  ORDER BY opportunities.id ASC;";
+        $result = $GLOBALS['db']->query($query);
+        while($hash=$GLOBALS['db']->fetchByAssoc($result)) {
+            $opportunityID = $hash['id'];
+            $query2 = "SELECT MAX(date_closed) AS date_closed FROM revenue_line_items WHERE opportunity_id = '{$opportunityID}' AND deleted=0";
+            $result2 = $GLOBALS['db']->query($query2);
+            $hash2=$GLOBALS['db']->fetchByAssoc($result2);
+            $newDate=$hash2['date_closed'];
+            $this->results[$opportunityID] = "This opportunities Closed Date updated from {$hash['date_closed']} to {$newDate}";
+            $query3="UPDATE opportunities SET date_closed = '{$newDate}' WHERE id='{$opportunityID}'";
+            $GLOBALS['db']->query($query3);
+        }
     }
 }
