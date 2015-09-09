@@ -33,5 +33,5 @@
  * @version    1.9
  * @link       http://www.sugarforge.org/reviews/?group_id=1300
  */
-$mod_strings['LBL_FIXFORECASTS'] = 'Fix Forecast Manager Worksheets';
-$mod_strings['LBL_FIXFORECASTS_DESC'] = "Fix Forecast Manager Worksheets after a change to the 'reports_to' structure";
+$mod_strings['LBL_FIXTEAMS'] = 'Fix Team Structure';
+$mod_strings['LBL_FIXTEAMS_DESC'] = "Fix complete team structure, from sets to membership";
