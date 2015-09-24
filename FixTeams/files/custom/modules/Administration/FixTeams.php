@@ -1,4 +1,8 @@
 <?php
+
+//ToDo: all users to global team
+//ToDo: Find broken TeamSets (TeamSets with missing teams
+
 if (!defined('sugarEntry')) define('sugarEntry', true);
 ini_set('max_execution_time', 900);
 set_time_limit(900);
