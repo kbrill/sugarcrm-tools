@@ -1,6 +1,6 @@
 <?php
 
-$packageArray = array('fixForecasts', 'fixLanguageFiles');
+$packageArray = array('fixForecasts', 'fixLanguageFiles', 'ReportDiagnostics');
 
 foreach ($packageArray as $packageName) {
     // Get real path for our folder
