@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * ReportDiagnistics is a program developed by
+ * ReportDiagnostics is a program developed by
  * Kenneth Brill (kbrill@sugarcrm.com)
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,6 +34,8 @@
  * @link       http://www.sugarforge.org/reviews/?group_id=1300
  */
 
+//ToDo: Add checks for schedule reports
+//ToDo: Finish the last relationship check at the bottom
 
 if (!defined('sugarEntry')) define('sugarEntry', true);
 require_once("data/BeanFactory.php");
@@ -266,5 +268,9 @@ class reportTest
 
     public function getAttribute() {
         return null;
+    }
+
+    private function checkScheduledReports($report) {
+
     }
 }
