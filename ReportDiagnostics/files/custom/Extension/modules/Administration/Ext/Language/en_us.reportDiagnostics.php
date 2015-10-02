@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SweetDBAdmin is a SQL management program developed by
+ * ReportDiagnistics is a program developed by
  * Kenneth Brill (kbrill@sugarcrm.com)
  *
  * This program is free software; you can redistribute it and/or modify it under
