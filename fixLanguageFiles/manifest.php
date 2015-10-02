@@ -50,7 +50,8 @@ $manifest = array(
     'acceptable_sugar_versions' => array (
         'regex_matches' => array (
             1 => "6\.5\.*.*",
-            2 => "7\.5\.*.*",
+            2 => "6\.7\.*.*",
+            3 => "7\.5\.*.*",
         ),
     ),
     'acceptable_sugar_flavors' => array (
