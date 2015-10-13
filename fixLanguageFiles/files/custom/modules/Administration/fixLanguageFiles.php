@@ -1,7 +1,7 @@
 <?php
 if (!defined('sugarEntry')) define('sugarEntry', true);
-require_once('include/entryPoint.php');
-require_once('include/utils/array_utils.php');
+
+//require_once('include/utils/array_utils.php');
 if (empty($current_language)) {
     $current_language = $sugar_config['default_language'];
 }
@@ -50,7 +50,7 @@ class fixLanguageFiles
     {
         $this->scanCustomDirectory();
         $this->colors = new Colors();
-        if(file_exists('fixLanguageFiles.log')) {
+        if (file_exists('fixLanguageFiles.log')) {
             unlink('fixLanguageFiles.log');
         }
     }
@@ -64,15 +64,15 @@ class fixLanguageFiles
             $result = $this->testLanguageFile($fileName);
             switch ($result) {
                 case self::TYPE_UNREADABLE:
-                    $this->logThis("Unreadable file: {$fileName}",SEV_HIGH);
+                    $this->logThis("Unreadable file: {$fileName}", SEV_HIGH);
                     break;
                 case self::TYPE_UNWRITABLE:
-                    $this->logThis("Unwritable file: {$fileName}",SEV_HIGH);
+                    $this->logThis("Unwritable file: {$fileName}", SEV_HIGH);
                     break;
                 case self::TYPE_EMPTY:
-//                    $this->logThis("Empty language file: {$fileName}");
-//                    unlink($fileName);
-//                    $this->logThis("-> Deleted file}");
+                    $this->logThis("Empty language file: {$fileName}");
+                    unlink($fileName);
+                    $this->logThis("-> Deleted file}");
                     break;
                 case self::TYPE_DYNAMIC:
                     $this->logThis("You will need to manually update: {$fileName}", SEV_HIGH);
@@ -117,7 +117,7 @@ class fixLanguageFiles
             if (is_array($token)) {
                 $tokenText = token_name($token[0]);
             } else {
-                //this isnt translated for some reason
+                //this isn't translated for some reason
                 if ($tokens[$index] == '.') {
                     $tokenText = 'T_CONCAT';
                 } else {
@@ -254,10 +254,14 @@ class fixLanguageFiles
         }
         $flags = LOCK_EX;
         $moduleList = false;
+        $moduleListSingular = false;
         $phpTag = "<?php";
 
         if (count($app_list_strings) > 0) {
             foreach ($app_list_strings as $key => $value) {
+                if ($value == NULL || $key == NULL) {
+                    continue;
+                }
                 if ($key == 'moduleList' && $moduleList == false) {
                     $the_string = "{$phpTag}\n";
                     foreach ($value as $mKey => $mValue) {
@@ -267,6 +271,15 @@ class fixLanguageFiles
                     $flags = FILE_APPEND | LOCK_EX;
                     $phpTag = "";
                     $moduleList = true;
+                } elseif ($key == 'moduleListSingular' && $moduleListSingular == false) {
+                    $the_string = "{$phpTag}\n";
+                    foreach ($value as $mKey => $mValue) {
+                        $the_string .= "\$app_list_strings['moduleListSingular']['{$mKey}'] = '{$mValue}';\n";
+                    }
+                    sugar_file_put_contents($fileNameToUpdate, $the_string, $flags);
+                    $flags = FILE_APPEND | LOCK_EX;
+                    $phpTag = "";
+                    $moduleListSingular = true;
                 } else {
                     $the_string = "{$phpTag}\n\$app_list_strings['{$key}'] = " .
                         var_export_helper($app_list_strings[$key]) .
@@ -283,9 +296,11 @@ class fixLanguageFiles
         if (count($app_strings) > 0) {
             $the_string = "{$phpTag}\n";
             foreach ($app_strings as $key => $value) {
+                if ($value == NULL || $key == NULL) {
+                    continue;
+                }
                 $the_string .= "\$app_strings['{$key}']='{$value}';\n";
             }
-
             sugar_file_put_contents($fileNameToUpdate, $the_string, $flags);
         }
         //Make sure the final file is loadable
@@ -295,7 +310,7 @@ class fixLanguageFiles
 
     private function updateFieldsMetaDataTable($listName, $newKey, $oldKey)
     {
-        foreach($listName as $moduleName=>$fieldName) {
+        foreach ($listName as $moduleName => $fieldName) {
             $query = str_replace(array("\r", "\n"), "", "UPDATE fields_meta_data
                         SET default_value = REPLACE(default_value, '{$oldKey}', '{$newKey}')
                         WHERE custom_module='{$moduleName}'
@@ -343,7 +358,7 @@ class fixLanguageFiles
             }
         }
         if (empty($retArray)) {
-            $this->logThis("Could not locate '{$listName}' in bean '{$bean}', it appears not to be used as a dropdown list",SEV_HIGH);
+            $this->logThis("Could not locate '{$listName}' in bean '{$bean}', it appears not to be used as a dropdown list", SEV_HIGH);
 
         }
         $this->arrayCache[$listName] = $retArray;
@@ -440,7 +455,7 @@ class fixLanguageFiles
 
         foreach ($objects as $name => $object) {
             if (!$object->isDir() &&
-                stripos($name, '/Language/') !== false &&
+                stripos($name, DIRECTORY_SEPARATOR . 'Language' . DIRECTORY_SEPARATOR) !== false &&
                 substr($name, -4) == '.php'
             ) {
                 $this->customLanguageFileList[] = $name;
@@ -456,42 +471,43 @@ class fixLanguageFiles
     /**
      * flatfile logger
      */
-    public function logThis($entry, $severity=SEV_LOW) {
+    public function logThis($entry, $severity = SEV_LOW)
+    {
         global $mod_strings;
-        if(file_exists('include/utils/sugar_file_utils.php')){
+        if (file_exists('include/utils/sugar_file_utils.php')) {
             require_once('include/utils/sugar_file_utils.php');
         }
         $log = 'fixLanguageFiles.log';
 
         // create if not exists
         $fp = @fopen($log, 'a+');
-        if(!is_resource($fp)) {
+        if (!is_resource($fp)) {
             $GLOBALS['log']->fatal('fixLanguageFiles could not open/lock upgradeWizard.log file');
             die($mod_strings['ERR_UW_LOG_FILE_UNWRITABLE']);
         }
 
-        $line = date('r') . " [{$severity}] - ".$entry . "\n";
+        $line = date('r') . " [{$severity}] - " . $entry . "\n";
 
-        if(@fwrite($fp, $line) === false) {
-            $GLOBALS['log']->fatal('fixLanguageFiles could not write to upgradeWizard.log: '.$entry);
+        if (@fwrite($fp, $line) === false) {
+            $GLOBALS['log']->fatal('fixLanguageFiles could not write to upgradeWizard.log: ' . $entry);
             die($mod_strings['ERR_UW_LOG_FILE_UNWRITABLE']);
         }
 
-        if(is_resource($fp)) {
+        if (is_resource($fp)) {
             fclose($fp);
         }
 
-        switch($severity) {
+        switch ($severity) {
             case SEV_MEDIUM:
-                echo "<span style=\"color:red\">{$entry}</span><br>";
+                echo "<span style=\"color:orange\">{$entry}</span><br>";
                 break;
             case SEV_HIGH:
-                $entry=strtoupper($entry);
+                $entry = strtoupper($entry);
                 echo "<span style=\"color:red\">{$entry}</span><br>";
                 break;
             case SEV_LOW:
             default:
-            "<span style=\"color:green\">{$entry}</span><br>";
+                "<span style=\"color:green\">{$entry}</span><br>";
                 break;
         }
 

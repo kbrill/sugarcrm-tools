@@ -7,5 +7,5 @@
  * To change this template use File | Settings | File Templates.
  */
 $admin_option_defs=array();
-$admin_option_defs['Administration']['FIXLANGUAGEFILES']= array('Administration','LBL_FIXLANGUAGEFILES','LBL_FIXLANGUAGEFILES_DESC','./index.php?module=Administration&action=FixLanguageFiles');
+$admin_option_defs['Administration']['FIXLANGUAGEFILES']= array('Administration','LBL_FIXLANGUAGEFILES','LBL_FIXLANGUAGEFILES_DESC','./index.php?module=Administration&action=fixLanguageFiles');
 $admin_group_header[]=array('LBL_FIXLANGUAGEFILES','',false,$admin_option_defs);
