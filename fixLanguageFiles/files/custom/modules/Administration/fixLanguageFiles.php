@@ -44,12 +44,10 @@ class fixLanguageFiles
     private $arrayCache = array();
     private $queryCache = array();
     private $globalsFound;
-    private $colors;
 
     public function __construct()
     {
         $this->scanCustomDirectory();
-        $this->colors = new Colors();
         if (file_exists('fixLanguageFiles.log')) {
             unlink('fixLanguageFiles.log');
         }
