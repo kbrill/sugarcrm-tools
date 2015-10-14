@@ -66,8 +66,8 @@ $manifest = array(
     'name' 			=> 'SugarCRM: Pre-upgrade repair tool',
     'description' 		=> 'A tool to repair language files',
     'author' 		=> 'Ken Brill',
-    'published_date'	=> '09/01/2015',
-    'version' 		=> '1.0',
+    'published_date'	=> '10/01/2015',
+    'version' 		=> '2.0',
     'type' 			=> 'module',
     'is_uninstallable' 	=> true,
 );
