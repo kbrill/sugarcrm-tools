@@ -70,7 +70,7 @@ class fixLanguageFiles
                 case self::TYPE_EMPTY:
                     $this->logThis("Empty language file: {$fileName}");
                     unlink($fileName);
-                    $this->logThis("-> Deleted file}");
+                    $this->logThis("-> Deleted file");
                     break;
                 case self::TYPE_DYNAMIC:
                     $this->logThis("You will need to manually update: {$fileName}", self::SEV_HIGH);
@@ -226,7 +226,7 @@ class fixLanguageFiles
         if ($changed) {
             $this->writeLanguageFile($fileName, $app_list_strings, $app_strings, $keyCount);
         } else {
-            $this->logThis("NO CHANGES {$fileName}");
+            $this->logThis("-> No Changes");
         }
 
         //Put the language files back
@@ -265,7 +265,7 @@ class fixLanguageFiles
      */
     private function writeLanguageFile($fileNameToUpdate, $app_list_strings, $app_strings, $keyCount)
     {
-        $this->logThis("Updating {$fileNameToUpdate}");
+        $this->logThis("-> Updating");
         if(!is_writable($fileNameToUpdate)) {
             $this->logThis("{$fileNameToUpdate} is not writable!!!!!!!", self::SEV_HIGH);
         }
