@@ -148,7 +148,7 @@ class fixLanguageFiles
         global $app_list_strings;
         global $app_strings;
 
-//        $this->logThis("Processing {$fileName}");
+        $this->logThis("Processing {$fileName}");
 
         $app_list_strings = array();
         $app_strings = array();
@@ -222,7 +222,7 @@ class fixLanguageFiles
         if ($changed) {
             $this->writeLanguageFile($fileName, $app_list_strings, $app_strings, $keyCount);
         } else {
-//            $this->logThis("NO CHANGES {$fileName}");
+            $this->logThis("NO CHANGES {$fileName}");
         }
 
         //Put the language files back
@@ -263,7 +263,7 @@ class fixLanguageFiles
     {
         $this->logThis("Updating {$fileNameToUpdate}");
         if(!is_writable($fileNameToUpdate)) {
-            $this->logThis("{$fileNameToUpdate} is not writabe!!!!!!!");
+            $this->logThis("{$fileNameToUpdate} is not writable!!!!!!!");
         }
         if ($keyCount > 0) {
             $this->logThis("-> {$keyCount} keys changed");
