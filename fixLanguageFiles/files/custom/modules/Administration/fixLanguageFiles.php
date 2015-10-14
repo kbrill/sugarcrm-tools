@@ -189,6 +189,10 @@ class fixLanguageFiles
                         $this->logThis("\$app_list_strings['{$key}']['{$mKey}'] in '{$fileName}' is being removed as it is set to NULL!", self::SEV_MEDIUM);
                         $changed = true;
                     }
+                    if($key=='moduleList' && empty($mValue)) {
+                        $this->logThis("\$app_list_strings['{$key}']['{$mKey}'] in '{$fileName}' is being removed as it is an empty value!", self::SEV_MEDIUM);
+                        $changed = true;
+                    }
                 }
             }
             if ($key == 'moduleList' || $key == 'moduleListSingular') {
@@ -274,22 +278,24 @@ class fixLanguageFiles
         $phpTag = "<?php";
 
         if (count($app_list_strings) > 0) {
-            //first pass
-            foreach ($app_list_strings as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $mKey => $mValue) {
-                        if (is_null($mValue)) {
-                            unset($app_list_strings[$key][$mKey]);
-                        }
-                    }
-                }
-            }
-            //Second pass
+//            //first pass
+//            foreach ($app_list_strings as $key => $value) {
+//                if (is_array($value)) {
+//                    foreach ($value as $mKey => $mValue) {
+//                        if (is_null($mValue)) {
+//                            unset($app_list_strings[$key][$mKey]);
+//                        }
+//                    }
+//                }
+//            }
+//            //Second pass
             foreach ($app_list_strings as $key => $value) {
                 if ($key == 'moduleList' && $moduleList == false) {
                     $the_string = "{$phpTag}\n";
                     foreach ($value as $mKey => $mValue) {
-                        $the_string .= "\$app_list_strings['moduleList']['{$mKey}'] = '{$mValue}';\n";
+                        if(!empty($mValue)) {
+                            $the_string .= "\$app_list_strings['moduleList']['{$mKey}'] = '{$mValue}';\n";
+                        }
                     }
                     sugar_file_put_contents($fileNameToUpdate, $the_string, $flags);
                     $flags = FILE_APPEND | LOCK_EX;
@@ -298,7 +304,9 @@ class fixLanguageFiles
                 } elseif ($key == 'moduleListSingular' && $moduleListSingular == false) {
                     $the_string = "{$phpTag}\n";
                     foreach ($value as $mKey => $mValue) {
-                        $the_string .= "\$app_list_strings['moduleListSingular']['{$mKey}'] = '{$mValue}';\n";
+                        if(!empty($mValue)) {
+                            $the_string .= "\$app_list_strings['moduleListSingular']['{$mKey}'] = '{$mValue}';\n";
+                        }
                     }
                     sugar_file_put_contents($fileNameToUpdate, $the_string, $flags);
                     $flags = FILE_APPEND | LOCK_EX;
