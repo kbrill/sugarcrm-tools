@@ -267,7 +267,7 @@ class fixLanguageFiles
     {
         $this->logThis("Updating {$fileNameToUpdate}");
         if(!is_writable($fileNameToUpdate)) {
-            $this->logThis("{$fileNameToUpdate} is not writable!!!!!!!");
+            $this->logThis("{$fileNameToUpdate} is not writable!!!!!!!", self::SEV_HIGH);
         }
         if ($keyCount > 0) {
             $this->logThis("-> {$keyCount} keys changed");
@@ -278,17 +278,6 @@ class fixLanguageFiles
         $phpTag = "<?php";
 
         if (count($app_list_strings) > 0) {
-//            //first pass
-//            foreach ($app_list_strings as $key => $value) {
-//                if (is_array($value)) {
-//                    foreach ($value as $mKey => $mValue) {
-//                        if (is_null($mValue)) {
-//                            unset($app_list_strings[$key][$mKey]);
-//                        }
-//                    }
-//                }
-//            }
-//            //Second pass
             foreach ($app_list_strings as $key => $value) {
                 if ($key == 'moduleList' && $moduleList == false) {
                     $the_string = "{$phpTag}\n";
@@ -488,12 +477,14 @@ class fixLanguageFiles
         foreach ($objects as $name => $object) {
             if (!$object->isDir() &&
                 stripos($name, DIRECTORY_SEPARATOR . 'Language' . DIRECTORY_SEPARATOR) !== false &&
+                stripos($name, 'custom' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR) === false &&
                 substr($name, -4) == '.php'
             ) {
                 $this->customLanguageFileList[] = $name;
-            } else if (substr($name, -4) == '.php' ||
+            } else if ((substr($name, -4) == '.php' ||
                 substr($name, -3) == '.js' ||
-                substr($name, -4) == '.tpl'
+                substr($name, -4) == '.tpl') &&
+                stripos($name, 'custom' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR) === false
             ) {
                 $this->customOtherFileList[] = $name;
             }
@@ -539,7 +530,7 @@ class fixLanguageFiles
                 break;
             case self::SEV_LOW:
             default:
-                "<span style=\"color:green\">{$entry}</span><br>";
+                echo "<span style=\"color:green\">{$entry}</span><br>";
                 break;
         }
 
