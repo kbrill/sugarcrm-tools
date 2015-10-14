@@ -62,10 +62,10 @@ class fixLanguageFiles
             $result = $this->testLanguageFile($fileName);
             switch ($result) {
                 case self::TYPE_UNREADABLE:
-                    $this->logThis("Unreadable file: {$fileName}", SEV_HIGH);
+                    $this->logThis("Unreadable file: {$fileName}", self::SEV_HIGH);
                     break;
                 case self::TYPE_UNWRITABLE:
-                    $this->logThis("Unwritable file: {$fileName}", SEV_HIGH);
+                    $this->logThis("Unwritable file: {$fileName}", self::SEV_HIGH);
                     break;
                 case self::TYPE_EMPTY:
                     $this->logThis("Empty language file: {$fileName}");
@@ -73,7 +73,7 @@ class fixLanguageFiles
                     $this->logThis("-> Deleted file}");
                     break;
                 case self::TYPE_DYNAMIC:
-                    $this->logThis("You will need to manually update: {$fileName}", SEV_HIGH);
+                    $this->logThis("You will need to manually update: {$fileName}", self::SEV_HIGH);
                     break;
                 case self::TYPE_STATIC:
                     $this->repairStaticFile($fileName);
@@ -178,9 +178,24 @@ class fixLanguageFiles
         foreach ($app_strings as $key => $value) {
             if (is_array($value)) {
                 //Should be an app_list_string
-                $changed = true;
-                $app_list_strings[$key] = $value;
-                unset($app_strings[$key]);
+                $this->logThis("\$app_string '{$key}' in '{$fileName}' is an array.  Arrays are not allowed in \$app_strings!", self::SEV_HIGH);
+            }
+        }
+
+        foreach ($app_list_strings as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $mKey => $mValue) {
+                    if (is_null($mValue)) {
+                        $this->logThis("\$app_list_strings['{$key}']['{$mKey}'] in '{$fileName}' is being removed as it is set to NULL!", self::SEV_MEDIUM);
+                        $changed = true;
+                    }
+                }
+            }
+            if ($key == 'moduleList' || $key == 'moduleListSingular') {
+                if (is_array($value)) {
+                    $this->logThis("\$app_list_strings '{$key}' in '{$fileName}' is being converted from an array to individual strings!", self::SEV_MEDIUM);
+                    $changed = true;
+                }
             }
         }
 
@@ -247,6 +262,9 @@ class fixLanguageFiles
     private function writeLanguageFile($fileNameToUpdate, $app_list_strings, $app_strings, $keyCount)
     {
         $this->logThis("Updating {$fileNameToUpdate}");
+        if(!is_writable($fileNameToUpdate)) {
+            $this->logThis("{$fileNameToUpdate} is not writabe!!!!!!!");
+        }
         if ($keyCount > 0) {
             $this->logThis("-> {$keyCount} keys changed");
         }
@@ -256,10 +274,18 @@ class fixLanguageFiles
         $phpTag = "<?php";
 
         if (count($app_list_strings) > 0) {
+            //first pass
             foreach ($app_list_strings as $key => $value) {
-                if ($value == NULL || $key == NULL) {
-                    continue;
+                if (is_array($value)) {
+                    foreach ($value as $mKey => $mValue) {
+                        if (is_null($mValue)) {
+                            unset($app_list_strings[$key][$mKey]);
+                        }
+                    }
                 }
+            }
+            //Second pass
+            foreach ($app_list_strings as $key => $value) {
                 if ($key == 'moduleList' && $moduleList == false) {
                     $the_string = "{$phpTag}\n";
                     foreach ($value as $mKey => $mValue) {
@@ -356,7 +382,7 @@ class fixLanguageFiles
             }
         }
         if (empty($retArray)) {
-            $this->logThis("Could not locate '{$listName}' in bean '{$bean}', it appears not to be used as a dropdown list", SEV_HIGH);
+            $this->logThis("Could not locate '{$listName}' in bean '{$bean}', it appears not to be used as a dropdown list", self::SEV_HIGH);
 
         }
         $this->arrayCache[$listName] = $retArray;
@@ -423,13 +449,13 @@ class fixLanguageFiles
         }
 
         if (!empty($matches)) {
-            $this->logThis("------------------------------------------------------------", SEV_MEDIUM);
-            $this->logThis("These files MAY need to be updated to reflect the new key (New '{$newKey}' vs. old '{$oldKey}')", SEV_MEDIUM);
-            $this->logThis("-------------------------------------------------------------", SEV_MEDIUM);
+            $this->logThis("------------------------------------------------------------", self::SEV_MEDIUM);
+            $this->logThis("These files MAY need to be updated to reflect the new key (New '{$newKey}' vs. old '{$oldKey}')", self::SEV_MEDIUM);
+            $this->logThis("-------------------------------------------------------------", self::SEV_MEDIUM);
             foreach ($matches as $fileName => $flag) {
-                $this->logThis("{$fileName}", SEV_MEDIUM);
+                $this->logThis("{$fileName}", self::SEV_MEDIUM);
             }
-            $this->logThis("-------------------------------------------------------------", SEV_MEDIUM);
+            $this->logThis("-------------------------------------------------------------", self::SEV_MEDIUM);
         }
     }
 
@@ -469,7 +495,7 @@ class fixLanguageFiles
     /**
      * flatfile logger
      */
-    public function logThis($entry, $severity = SEV_LOW)
+    public function logThis($entry, $severity = self::SEV_LOW)
     {
         global $mod_strings;
         if (file_exists('include/utils/sugar_file_utils.php')) {
@@ -496,14 +522,14 @@ class fixLanguageFiles
         }
 
         switch ($severity) {
-            case SEV_MEDIUM:
+            case self::SEV_MEDIUM:
                 echo "<span style=\"color:orange\">{$entry}</span><br>";
                 break;
-            case SEV_HIGH:
+            case self::SEV_HIGH:
                 $entry = strtoupper($entry);
                 echo "<span style=\"color:red\">{$entry}</span><br>";
                 break;
-            case SEV_LOW:
+            case self::SEV_LOW:
             default:
                 "<span style=\"color:green\">{$entry}</span><br>";
                 break;
