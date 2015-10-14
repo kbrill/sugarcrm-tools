@@ -474,16 +474,24 @@ class fixLanguageFiles
         $objects = new RecursiveIteratorIterator($dir,
             RecursiveIteratorIterator::SELF_FIRST);
 
+        //in each of these we skip the custom/application/ and custom/modules/MODULE_NAME/Ext directories as they
+        // will be updated after a QRR
         foreach ($objects as $name => $object) {
             if (!$object->isDir() &&
                 stripos($name, DIRECTORY_SEPARATOR . 'Language' . DIRECTORY_SEPARATOR) !== false &&
                 stripos($name, 'custom' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR) === false &&
+                (stripos($name, DIRECTORY_SEPARATOR . 'Ext' . DIRECTORY_SEPARATOR) === false ||
+                    stripos($name, DIRECTORY_SEPARATOR . 'Extension' . DIRECTORY_SEPARATOR) !== false
+                ) &&
                 substr($name, -4) == '.php'
             ) {
                 $this->customLanguageFileList[] = $name;
             } else if ((substr($name, -4) == '.php' ||
                 substr($name, -3) == '.js' ||
                 substr($name, -4) == '.tpl') &&
+                (stripos($name, DIRECTORY_SEPARATOR . 'Ext' . DIRECTORY_SEPARATOR) === false ||
+                    stripos($name, DIRECTORY_SEPARATOR . 'Extension' . DIRECTORY_SEPARATOR) !== false
+                ) &&
                 stripos($name, 'custom' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR) === false
             ) {
                 $this->customOtherFileList[] = $name;
