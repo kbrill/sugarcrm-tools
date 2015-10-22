@@ -105,32 +105,46 @@ class fixRelationshipFiles
     {
         global $layout_defs;
 
-        $this->logThis("Processing {$fileName}");
+        $this->logThis("Processing file: {$fileName}");
+
+        $layout_defs=array();
+
+        require($fileName);
 
         //Make a backup of whatever layout files are currently loaded
         $temp_layout_defs = $layout_defs;
-        $layout_defs = array();
+
+        $count=count($layout_defs);
         $changed=false;
         foreach ($layout_defs as $module => $subpanelSetup) {
-            foreach($subpanelSetup as $name=>$panel) {
+            foreach($subpanelSetup["subpanel_setup"] as $name=>$panel) {
+
                 if (!empty($panel['module']) && ($panel['module'] == 'Activities' || $panel['module'] == 'History')
                     && isset($panel['collection_list'])
                 ) {
                     // skip activities/history, upgrader will take care of them
+                    $this->logThis("-> Skipping",self::SEV_LOW);
                     continue;
                 }
+
+//                echo "PANEL: {$panel['module']}<br>";
+//                echo "BEANLIST: {$this->beanList[$panel['module']]}<br>";
 
                 // check subpanel module. This param should refer to existing module
                 if (!empty($panel['module']) &&
                     empty($this->beanList[$panel['module']])) {
                     unset($layout_defs[$module]['subpanel_setup'][$name]);
+                    $count--;
                     $changed=true;
+                    $this->logThis("--> {$panel['module']} is not a valid module, removing this layout",self::SEV_HIGH);
                 }
 
                 if (!empty($panel['get_subpanel_data']) &&
                     strpos($panel['get_subpanel_data'], 'function:') !== false) {
                     unset($layout_defs[$module]['subpanel_setup'][$name]);
+                    $count--;
                     $changed=true;
+                    $this->logThis("--> {$panel['get_subpanel_data']} is not a valid function, removing this layout",self::SEV_HIGH);
                 }
                 $objectName = $this->getObjectName($module);
                 if (!empty($panel['get_subpanel_data']) && !$this->isValidLink(
@@ -140,13 +154,15 @@ class fixRelationshipFiles
                     )
                 ) {
                     unset($layout_defs[$module]['subpanel_setup'][$name]);
+                    $count--;
                     $changed=true;
+                    $this->logThis("--> {$panel['get_subpanel_data']} is not a valid link, removing this layout",self::SEV_HIGH);
                 }
             }
         }
 
         if ($changed) {
-            $this->writeRelationshipFile($fileName, $layout_defs);
+            $this->writeRelationshipFile($fileName, $layout_defs, $count);
         } else {
             $this->logThis("-> No Changes");
         }
@@ -160,26 +176,32 @@ class fixRelationshipFiles
      * @param $app_list_strings
      * @param $app_strings
      */
-    private function writeRelationshipFile($fileNameToUpdate, $layout_defs)
+    private function writeRelationshipFile($fileNameToUpdate, $layout_defs, $count)
     {
         if (!is_writable($fileNameToUpdate)) {
             $this->logThis("{$fileNameToUpdate} is not writable!!!!!!!", self::SEV_HIGH);
         }
-        if (count($layout_defs) == 0) {
+        if ($count == 0) {
             $this->logThis("-> This file is no longer valid, deleting it",self::SEV_HIGH);
+            if(file_exists($fileNameToUpdate.".bak")) {
+                unlink($fileNameToUpdate.".bak");
+            }
             copy($fileNameToUpdate,$fileNameToUpdate.".bak");
+            unlink($fileNameToUpdate);
         } else {
             $this->logThis("-> Updating");
             $flags = LOCK_EX;
             $phpTag = "<?php";
 
             foreach ($layout_defs as $key => $value) {
+                if(!empty($layout_defs[$key]['subpanel_setup'])) {
                     $the_string = "{$phpTag}\n\$layout_defs['{$key}'] = " .
                         var_export_helper($layout_defs[$key]) .
                         ";\n";
                     sugar_file_put_contents($fileNameToUpdate, $the_string, $flags);
                     $flags = FILE_APPEND | LOCK_EX;
                     $phpTag = "";
+                }
             }
 
             //Make sure the final file is loadable
@@ -232,14 +254,14 @@ class fixRelationshipFiles
         // create if not exists
         $fp = @fopen($log, 'a+');
         if (!is_resource($fp)) {
-            $GLOBALS['log']->fatal('fixRelationshipFiles could not open/lock upgradeWizard.log file');
+            $GLOBALS['log']->fatal("fixRelationshipFiles could not open/lock {$log} file");
             die($mod_strings['ERR_UW_LOG_FILE_UNWRITABLE']);
         }
 
         $line = date('r') . " [{$severity}] - " . $entry . "\n";
 
         if (@fwrite($fp, $line) === false) {
-            $GLOBALS['log']->fatal('fixRelationshipFiles could not write to upgradeWizard.log: ' . $entry);
+            $GLOBALS['log']->fatal("fixRelationshipFiles could not write to {$log}: " . $entry);
             die($mod_strings['ERR_UW_LOG_FILE_UNWRITABLE']);
         }
 
@@ -276,7 +298,7 @@ class fixRelationshipFiles
         }
         if (empty($GLOBALS['dictionary'][$object]['fields'])) {
             // weird, we could not load vardefs for this link
-            $this->log("Failed to load vardefs for $module:$object");
+            //$this->logThis("Failed to load vardefs for $module:$object");
             return false;
         }
         if (empty($GLOBALS['dictionary'][$object]['fields'][$link]) ||
@@ -301,6 +323,7 @@ class fixRelationshipFiles
         if (!empty($this->beanList[$module])) {
             return $this->beanList[$module];
         }
+        $this->logThis("no module nam for: {$module}",self::SEV_MEDIUM);
         return null;
     }
 }
