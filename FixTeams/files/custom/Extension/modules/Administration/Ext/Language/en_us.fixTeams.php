@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SweetDBAdmin is a SQL management program developed by
+ * Fix Teams
  * Kenneth Brill (kbrill@sugarcrm.com)
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -26,7 +26,7 @@
  *
  *
  * @category   Custom Language File
- * @package    SweetDBAdmin
+ * @package    fixTeams
  * @author     Kenneth Brill <kbrill@sugarcrm.com>
  * @copyright  2011-2013 Kenneth Brill
  * @license    http://www.gnu.org/licenses/agpl.txt

@@ -1,0 +1,25 @@
+If you've ever had an issue where a string was being displayed on the screen but you couldn't figure out which language
+file or language string was producing that text, this file will edit the language files adding the numeric value to the
+end of any string in finds.  you that you're quick repair and refresh your screen and suddenly there's a numeric
+value at the end of your text string.  you just do a search through the customer directory for that number and you'll
+find your language.
+
+So, if you were looking at "Line Items" on the screen, you would just edit this file to add "Line Items" as the search
+term and also in the non-numeric part of the replace string, and then run the script from the root directory
+of the instance.  After that run a quick repair and refresh your screen.
+
+so the line in the file would be
+$newContents = str_replace("'Line Items';", "'Line Items{$i}';", $file, $count);
+
+you can erase the text replace term entirely and just leave the numeric part if you want like this
+
+$newContents = str_replace("'Line Items';", "'{$i}';", $file, $count);
+
+But, normally, when I use the tool I put the same thing for search & replace and leave the number at the end of the
+replace.
+
+one thing about the script is that it will put the same number for every instance of the search term in a
+particular file. So if your search term appears 20 times in a single file all 20 of those will have the same
+number appended to the end. This will least get you down to the file then once I have the file I manually replace the
+numbers with letters A, B, C, etc. to you find the exact string.  remember to do the quick repair after you
+replace the numbers letters.

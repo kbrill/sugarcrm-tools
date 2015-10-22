@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * Fix Language Files
+ * SweetDBAdmin is a SQL management program developed by
  * Kenneth Brill (kbrill@sugarcrm.com)
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -26,13 +26,12 @@
  *
  *
  * @category   Custom Language File
- * @package    fixLanguageFiles
+ * @package    FixRelationshipFiles
  * @author     Kenneth Brill <kbrill@sugarcrm.com>
  * @copyright  2011-2013 Kenneth Brill
  * @license    http://www.gnu.org/licenses/agpl.txt
  * @version    1.9
  * @link       http://www.sugarforge.org/reviews/?group_id=1300
  */
-$admin_option_defs=array();
-$admin_option_defs['Administration']['FIXLANGUAGEFILES']= array('Administration','LBL_FIXLANGUAGEFILES','LBL_FIXLANGUAGEFILES_DESC','./index.php?module=Administration&action=fixLanguageFiles');
-$admin_group_header[]=array('LBL_FIXLANGUAGEFILES','',false,$admin_option_defs);
+$mod_strings['LBL_FIXRELATIONSHIPFILES'] = 'Fix Relationship Files';
+$mod_strings['LBL_FIXRELATIONSHIPFILES_DESC'] = "Fix known issues in Relationship files prior to upgrade";
