@@ -1,7 +1,6 @@
 <?php
 if (!defined('sugarEntry')) define('sugarEntry', true);
 
-//require_once('include/utils/array_utils.php');
 if (empty($current_language)) {
     $current_language = $sugar_config['default_language'];
 }
@@ -44,9 +43,18 @@ class fixLanguageFiles
     private $arrayCache = array();
     private $queryCache = array();
     private $globalsFound;
+    private $objectList;
+    private $beanFiles;
+    private $beanList;
 
     public function __construct()
     {
+        $beanList = $beanFiles = $objectList = array();
+        require 'include/modules.php';
+        $this->beanList = $beanList;
+        $this->beanFiles = $beanFiles;
+        $this->objectList = $objectList;
+
         $this->scanCustomDirectory();
         if (file_exists('fixLanguageFiles.log')) {
             unlink('fixLanguageFiles.log');
@@ -189,18 +197,18 @@ class fixLanguageFiles
                         $this->logThis("\$app_list_strings['{$key}']['{$mKey}'] in '{$fileName}' is being removed as it is set to NULL!", self::SEV_MEDIUM);
                         $changed = true;
                     }
-                    if($key=='moduleList' && empty($mValue)) {
+                    if ($key == 'moduleList' && empty($mValue)) {
                         $this->logThis("\$app_list_strings['{$key}']['{$mKey}'] in '{$fileName}' is being removed as it is an empty value!", self::SEV_MEDIUM);
                         $changed = true;
                     }
                 }
             }
-            if ($key == 'moduleList' || $key == 'moduleListSingular') {
-                if (is_array($value)) {
-                    $this->logThis("\$app_list_strings '{$key}' in '{$fileName}' is being converted from an array to individual strings!", self::SEV_MEDIUM);
-                    $changed = true;
-                }
-            }
+//            if ($key == 'moduleList' || $key == 'moduleListSingular') {
+//                if (count($value)>1) {
+//                    $this->logThis("\$app_list_strings '{$key}' in '{$fileName}' is being converted from an array to individual strings!", self::SEV_MEDIUM);
+//                    $changed = true;
+//                }
+//            }
         }
 
         //Now go through and remove the characters [& / - ( )] and spaces (in some cases) from array keys
@@ -219,6 +227,26 @@ class fixLanguageFiles
                     $this->updateDatabase($listField, $oldKey, $newKey);
                     $this->updateFieldsMetaDataTable($listField, $newKey, $oldKey);
                     $this->updatefiles($newKey, $oldKey);
+                }
+            }
+        }
+
+        //Make sure everything in moduleList has a corresponding beanFile
+        if (array_key_exists('moduleList', $app_list_strings)) {
+            foreach ($app_list_strings['moduleList'] as $moduleKey => $moduleName) {
+                $okModules = array('iFrames', 'Feeds', 'Home', 'Dashboard', 'Sync', 'Calendar', 'Activities', 'Reports',
+                    'Queues');
+                if (!isset($this->beanList[$moduleKey]) || empty($this->beanList[$moduleKey])) {
+                    if (!in_array($moduleKey, $okModules)) {
+                        $this->logThis("\$app_list_strings['moduleList']['{$moduleKey}'] in '{$fileName}' is invalid.  There is no corresponding beanFile", self::SEV_HIGH);
+                        unset($app_list_strings['moduleList'][$moduleKey]);
+                        if (stripos($fileName, 'Extension') !== false &&
+                            count($app_list_strings) == 1
+                        ) {
+                            $this->logThis("'{$fileName}' Renamed", self::SEV_HIGH);
+                            rename($fileName, $fileName . '.old');
+                        }
+                    }
                 }
             }
         }
@@ -266,7 +294,7 @@ class fixLanguageFiles
     private function writeLanguageFile($fileNameToUpdate, $app_list_strings, $app_strings, $keyCount)
     {
         $this->logThis("-> Updating");
-        if(!is_writable($fileNameToUpdate)) {
+        if (!is_writable($fileNameToUpdate)) {
             $this->logThis("{$fileNameToUpdate} is not writable!!!!!!!", self::SEV_HIGH);
         }
         if ($keyCount > 0) {
@@ -282,7 +310,7 @@ class fixLanguageFiles
                 if ($key == 'moduleList' && $moduleList == false) {
                     $the_string = "{$phpTag}\n";
                     foreach ($value as $mKey => $mValue) {
-                        if(!empty($mValue)) {
+                        if (!empty($mValue)) {
                             $the_string .= "\$app_list_strings['moduleList']['{$mKey}'] = '{$mValue}';\n";
                         }
                     }
@@ -293,7 +321,7 @@ class fixLanguageFiles
                 } elseif ($key == 'moduleListSingular' && $moduleListSingular == false) {
                     $the_string = "{$phpTag}\n";
                     foreach ($value as $mKey => $mValue) {
-                        if(!empty($mValue)) {
+                        if (!empty($mValue)) {
                             $the_string .= "\$app_list_strings['moduleListSingular']['{$mKey}'] = '{$mValue}';\n";
                         }
                     }
@@ -436,12 +464,37 @@ class fixLanguageFiles
 
         foreach ($this->customOtherFileList as $fileName) {
             $text = sugar_file_get_contents($fileName);
-            if (strpos($text, $searchString1) !== FALSE) {
-                $matches[$fileName] = true;
-                $this->customListNames[] = $oldKey;
-            } elseif (strpos($text, $searchString2) !== FALSE) {
-                $matches[$fileName] = true;
-                $this->customListNames[] = $oldKey;
+            if (strpos($text, $searchString1) !== FALSE ||
+                strpos($text, $searchString2) !== FALSE
+            ) {
+                $oldText = array(
+                    "=> '{$oldKey}'",
+                    "=> \"{$oldKey}\"",
+                    "=>'{$oldKey}'",
+                    "=>\"{$oldKey}\"",
+                    "= '{$oldKey}'",
+                    "= \"{$oldKey}\"",
+                    "='{$oldKey}'",
+                    "=\"{$oldKey}\""
+                );
+                $newText = array(
+                    "=> '{$newKey}'",
+                    "=> \"{$newKey}\"",
+                    "=>'{$newKey}'",
+                    "=>\"{$newKey}\"",
+                    "= '{$newKey}'",
+                    "= \"{$newKey}\"",
+                    "='{$newKey}'",
+                    "=\"{$newKey}\""
+
+                );
+                $text = str_replace($oldText, $newText, $text);
+                if (strpos($text, $searchString1) !== FALSE) {
+                    $matches[$fileName] = true;
+                    $this->customListNames[] = $oldKey;
+                } else {
+                    sugar_file_put_contents($fileName, $text, LOCK_EX);
+                }
             }
         }
 
@@ -487,8 +540,8 @@ class fixLanguageFiles
             ) {
                 $this->customLanguageFileList[] = $name;
             } else if ((substr($name, -4) == '.php' ||
-                substr($name, -3) == '.js' ||
-                substr($name, -4) == '.tpl') &&
+                    substr($name, -3) == '.js' ||
+                    substr($name, -4) == '.tpl') &&
                 (stripos($name, DIRECTORY_SEPARATOR . 'Ext' . DIRECTORY_SEPARATOR) === false ||
                     stripos($name, DIRECTORY_SEPARATOR . 'Extension' . DIRECTORY_SEPARATOR) !== false
                 ) &&
