@@ -1,0 +1,175 @@
+#jao {
+	width: 600px;
+	border: 1px solid #CCC;
+	padding: 10px;
+	background: #FAFAFA;
+}
+
+ul.jaofiletree {
+	font-family: Verdana, sans-serif;
+	font-size: 11px;
+	line-height: 18px;
+	padding: 0px;
+	margin: 0px;
+}
+
+ul.jaofiletree li {
+	list-style: none;
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0px;
+	white-space: nowrap;
+}
+
+ul.jaofiletree a {
+	color: #333;
+	text-decoration: none;
+	display: inline-block;
+	padding: 0px 2px;
+}
+
+ul.jaofiletree a:hover {
+	font-weight: bold;
+}
+
+ul.jaofiletree li.selected > a {
+	background: #CED;
+}
+
+/* Core Styles */
+.jaofiletree li.directory { background: url(../../../index.php?entryPoint=getImage&imageName=directory.png) left top no-repeat; }
+.jaofiletree li.expanded { background: url(../../../index.php?entryPoint=getImage&imageName=folder_open.png) left top no-repeat; }
+.jaofiletree li.drive { background: url(../../../index.php?entryPoint=getImage&imageName=drive.png) left top no-repeat; }
+.jaofiletree li.file { background: url(../../../index.php?entryPoint=getImage&imageName=file.png) left top no-repeat; }
+.jaofiletree li.wait { background: url(../../../index.php?entryPoint=getImage&imageName=spinner.gif) left top no-repeat; }
+/* File Extensions*/
+.jaofiletree li.ext_3gp { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_afp { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_afpa { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_asp { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_aspx { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_avi { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_bat { background: url(../../../index.php?entryPoint=getImage&imageName=application.png) left top no-repeat; }
+.jaofiletree li.ext_bmp { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_c { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_cfm { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_cgi { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_com { background: url(../../../index.php?entryPoint=getImage&imageName=application.png) left top no-repeat; }
+.jaofiletree li.ext_cpp { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_css { background: url(../../../index.php?entryPoint=getImage&imageName=css.png) left top no-repeat; }
+.jaofiletree li.ext_doc { background: url(../../../index.php?entryPoint=getImage&imageName=doc.png) left top no-repeat; }
+.jaofiletree li.ext_exe { background: url(../../../index.php?entryPoint=getImage&imageName=application.png) left top no-repeat; }
+.jaofiletree li.ext_gif { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_fla { background: url(../../../index.php?entryPoint=getImage&imageName=flash.png) left top no-repeat; }
+.jaofiletree li.ext_h { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_htm { background: url(../../../index.php?entryPoint=getImage&imageName=html.png) left top no-repeat; }
+.jaofiletree li.ext_html { background: url(../../../index.php?entryPoint=getImage&imageName=html.png) left top no-repeat; }
+.jaofiletree li.ext_jar { background: url(../../../index.php?entryPoint=getImage&imageName=java.png) left top no-repeat; }
+.jaofiletree li.ext_jpg { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_jpeg { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_js { background: url(../../../index.php?entryPoint=getImage&imageName=script.png) left top no-repeat; }
+.jaofiletree li.ext_lasso { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_log { background: url(../../../index.php?entryPoint=getImage&imageName=txt.png) left top no-repeat; }
+.jaofiletree li.ext_m4p { background: url(../../../index.php?entryPoint=getImage&imageName=music.png) left top no-repeat; }
+.jaofiletree li.ext_mov { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_mp3 { background: url(../../../index.php?entryPoint=getImage&imageName=music.png) left top no-repeat; }
+.jaofiletree li.ext_mp4 { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_mpg { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_mpeg { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_ogg { background: url(../../../index.php?entryPoint=getImage&imageName=music.png) left top no-repeat; }
+.jaofiletree li.ext_pcx { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_pdf { background: url(../../../index.php?entryPoint=getImage&imageName=pdf.png) left top no-repeat; }
+.jaofiletree li.ext_php { background: url(../../../index.php?entryPoint=getImage&imageName=php.png) left top no-repeat; }
+.jaofiletree li.ext_png { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_ppt { background: url(../../../index.php?entryPoint=getImage&imageName=ppt.png) left top no-repeat; }
+.jaofiletree li.ext_psd { background: url(../../../index.php?entryPoint=getImage&imageName=psd.png) left top no-repeat; }
+.jaofiletree li.ext_pl { background: url(../../../index.php?entryPoint=getImage&imageName=script.png) left top no-repeat; }
+.jaofiletree li.ext_py { background: url(../../../index.php?entryPoint=getImage&imageName=script.png) left top no-repeat; }
+.jaofiletree li.ext_rb { background: url(../../../index.php?entryPoint=getImage&imageName=ruby.png) left top no-repeat; }
+.jaofiletree li.ext_rbx { background: url(../../../index.php?entryPoint=getImage&imageName=ruby.png) left top no-repeat; }
+.jaofiletree li.ext_rhtml { background: url(../../../index.php?entryPoint=getImage&imageName=ruby.png) left top no-repeat; }
+.jaofiletree li.ext_rpm { background: url(../../../index.php?entryPoint=getImage&imageName=linux.png) left top no-repeat; }
+.jaofiletree li.ext_ruby { background: url(../../../index.php?entryPoint=getImage&imageName=ruby.png) left top no-repeat; }
+.jaofiletree li.ext_sql { background: url(../../../index.php?entryPoint=getImage&imageName=db.png) left top no-repeat; }
+.jaofiletree li.ext_swf { background: url(../../../index.php?entryPoint=getImage&imageName=flash.png) left top no-repeat; }
+.jaofiletree li.ext_tif { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_tiff { background: url(../../../index.php?entryPoint=getImage&imageName=picture.png) left top no-repeat; }
+.jaofiletree li.ext_txt { background: url(../../../index.php?entryPoint=getImage&imageName=txt.png) left top no-repeat; }
+.jaofiletree li.ext_vb { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_wav { background: url(../../../index.php?entryPoint=getImage&imageName=music.png) left top no-repeat; }
+.jaofiletree li.ext_wmv { background: url(../../../index.php?entryPoint=getImage&imageName=film.png) left top no-repeat; }
+.jaofiletree li.ext_xls { background: url(../../../index.php?entryPoint=getImage&imageName=xls.png) left top no-repeat; }
+.jaofiletree li.ext_xml { background: url(../../../index.php?entryPoint=getImage&imageName=code.png) left top no-repeat; }
+.jaofiletree li.ext_zip { background: url(../../../index.php?entryPoint=getImage&imageName=zip.png) left top no-repeat; }
+
+/* Only for exemple */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Archivo Narrow', helvetica, sans-serif;
+    color: #333;    
+}
+
+h1 {
+    font-family: 'Archivo Black', helvetica, sans-serif;
+    color: #35373D;
+    border-top: 3px dashed   #35373D;
+    border-bottom: 3px dashed #35373D;
+    width: 400px;
+    margin: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #485590;
+}
+
+a:hover {
+    text-decoration: underline;    
+}
+
+#wrapper {
+    margin: 10px;
+    margin-bottom: 160px;
+    float: left;
+    width: 600px;
+}
+
+#content {
+    border-left: 3px dashed #35373D;
+    float: left;
+    padding-left: 30px;
+    margin: 10px 20px 160px 60px;
+    min-height: 400px;
+}
+
+#jao {
+    margin-left: 10px;
+}
+
+#debug {
+    width: 100%; 
+    position: fixed; 
+    bottom: 0; 
+    height: 150px;
+    border-top: 1px solid #AAA;
+    background: #FFF;
+}
+
+#debug a {
+    float: right;
+    margin-right: 2em;
+}
+
+#debug h2 {
+    font-size: 0.85em;
+    padding: 0.2em 0 0.2em 2em;
+    margin: 0;
+}
+
+#debugcontent {
+    border-top: 1px solid #AAA;
+    background:  #DDD;
+    overflow-y: scroll;    
+    height: 100%;
+}

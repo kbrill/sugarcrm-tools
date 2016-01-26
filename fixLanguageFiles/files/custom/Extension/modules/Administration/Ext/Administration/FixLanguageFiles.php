@@ -25,12 +25,12 @@
  * Section 5 of the GNU Affero General Public License version 3.
  *
  *
- * @category   Custom Language File
+ * @category   Custom Admin Menu
  * @package    fixLanguageFiles
  * @author     Kenneth Brill <kbrill@sugarcrm.com>
- * @copyright  2011-2013 Kenneth Brill
+ * @copyright  2015-2016 SugarCRM
  * @license    http://www.gnu.org/licenses/agpl.txt
- * @version    1.9
+ * @version    3.0
  * @link       http://www.sugarforge.org/reviews/?group_id=1300
  */
 $admin_option_defs=array();

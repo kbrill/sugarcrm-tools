@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * Fix Language Files
+ * addLogging
  * Kenneth Brill (kbrill@sugarcrm.com)
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,13 +25,14 @@
  * Section 5 of the GNU Affero General Public License version 3.
  *
  *
- * @category   Custom Language File
- * @package    fixLanguageFiles
+ * @category   Custom Admin Menu
+ * @package    addLogging
  * @author     Kenneth Brill <kbrill@sugarcrm.com>
  * @copyright  2015-2016 SugarCRM
  * @license    http://www.gnu.org/licenses/agpl.txt
- * @version    3.0
+ * @version    1.0
  * @link       http://www.sugarforge.org/reviews/?group_id=1300
  */
-$mod_strings['LBL_FIXLANGUAGEFILES'] = 'Fix Language Files';
-$mod_strings['LBL_FIXLANGUAGEFILES_DESC'] = "Fix known issues in language files prior to upgrade";
+$admin_option_defs=array();
+$admin_option_defs['Administration']['ADDLOGGING']= array('Administration','LBL_ADDLOGGING','LBL_ADDLOGGING_DESC','./index.php?module=Administration&action=addLogging');
+$admin_group_header[]=array('LBL_ADDLOGGING','',false,$admin_option_defs);

@@ -25,7 +25,7 @@
  * Section 5 of the GNU Affero General Public License version 3.
  *
  *
- * @category   Custom Language File
+ * @category   Custom Entry Point
  * @package    fixLanguageFiles
  * @author     Kenneth Brill <kbrill@sugarcrm.com>
  * @copyright  2015-2016 SugarCRM
@@ -33,5 +33,7 @@
  * @version    3.0
  * @link       http://www.sugarforge.org/reviews/?group_id=1300
  */
-$mod_strings['LBL_FIXLANGUAGEFILES'] = 'Fix Language Files';
-$mod_strings['LBL_FIXLANGUAGEFILES_DESC'] = "Fix known issues in language files prior to upgrade";
+$entry_point_registry['fixLanguageFiles_progress'] = array(
+    'file' => 'custom/fixLanguageFiles_Progress.php',
+    'auth' => false
+);
